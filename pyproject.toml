@@ -1,0 +1,48 @@
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bh-database"
+version = "0.0.1"
+description = "Database wrapper classes for SQLAlchemy."
+
+readme = "README.md"
+authors = [{ name = "Van Be Hai Nguyen", email = "behai_nguyen@hotmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["SQLAlchemy", "database", "wrapper"]
+
+dependencies = [
+    'tomli; python_version < "3.11"',
+    'SQLAlchemy', 
+    'psycopg2',
+    'mysql-connector-python',
+    'bh_apistatus',
+    'bh_utils'
+]
+
+requires-python = ">=3.7"
+
+[project.optional-dependencies]
+tests = [
+  "pytest",
+  "coverage"
+]
+builds = [
+    "build", 
+    "twine"
+]
+docs = [
+    "sphinx",
+    "myst-parser",
+    "sphinx-rtd-theme"
+]
+
+[project.urls]
+repository = "https://github.com/behai-nguyen/bh_database"
+documentation = "https://bh-database.readthedocs.io/"
