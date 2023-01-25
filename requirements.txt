@@ -1,6 +1,4 @@
 SQLAlchemy
-psycopg2
-mysql-connector-python
 bh_apistatus
 bh_utils
 pytest
