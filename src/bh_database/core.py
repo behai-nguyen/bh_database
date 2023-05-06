@@ -48,6 +48,8 @@ import logging
 # from threading import get_ident
 from enum import Enum
 
+from http import HTTPStatus
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import (
     sessionmaker, 
@@ -57,6 +59,8 @@ from sqlalchemy.orm import (
     Query,
 )
 from sqlalchemy.orm.decl_api import DeclarativeMeta
+
+from bh_apistatus.result_status import ResultStatus
 
 from bh_database.paginator import Paginator
 
@@ -144,20 +148,49 @@ class BaseSQLAlchemy(Base, BaseModel):
         Make intermediate results available so that they can be accessed while the transaction 
         is still on going. An example of intermediate result is a new unique key value, this 
         value might be needed as a foreign key for detail records awaiting written.
+
+        :Note on Exception: 
+
+        Potential unhandled exception: caller must handle the exception.
+
+        Within an ongoing transaction, if there is any potential database violation, calling 
+        this method will cause the driver to raise exception on the violation.
         """
         self.session.flush()
 
     def commit_transaction(self):
         """Commit a current transaction.
+
+        :Note on Exception: 
+
+        Potential unhandled exception: caller must handle the exception.
+
+        Within an ongoing transaction, if there is any potential database violation, calling 
+        this method will cause the driver to raise exception on the violation.
+
+        It is recommended to call :py:meth:`~finalise_transaction` instead.
         """
         self.session.commit()
         self.session.close()
 
     def rollback_transaction(self):
         """Rollback a current transaction.
+
+        When absolutely certain that the ongoing transaction must be rolled back, then call
+        this method. Otherwise it is recommended to call :py:meth:`~finalise_transaction` 
+        instead.
         """
         self.session.rollback()
         self.session.close()
+
+    def finalise_transaction(self, status: ResultStatus):
+        """Commit or rollback a transaction based on ``status.code``.
+
+        :param ResultStatus status: result of the last CRUD call. \
+            `ResultStatus <https://bh-apistatus.readthedocs.io/en/latest/result-status.html>`_.
+        """
+        self.commit_transaction() \
+            if (status.code == HTTPStatus.OK.value ) else self.rollback_transaction()
 
 class DatabaseType(Enum):
     """Enumerated constants identifying supported databases.
