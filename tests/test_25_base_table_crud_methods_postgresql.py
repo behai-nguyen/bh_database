@@ -88,17 +88,20 @@ def test_postgresql_write_to_database_commit_01():
     Transaction atomicity -- if there are other operations, they are wrapped within:
         employees.begin_transaction() or Employees.begin_transaction(Employees)
         ...
-        employees.commit_transaction() Employees.commit_transaction(Employees)
+        employees.finalise_transaction(status)
 
-    Of course, employees.commit_transaction() / Employees.commit_transaction(Employees) 
+    employees.finalise_transaction(status) conditionally calls employees.commit_transaction()
+    or employees.rollback_transaction()
+
+    It is apparent that employees.commit_transaction() / Employees.commit_transaction(Employees) 
     should be called conditionally.
     """
     employees.begin_transaction()
     status = employees.write_to_database([new_employee])
     """
-    Commit transaction: it should be called on successful completion of all writes.
+    Conditionally calls commit_transaction() or rollback_transaction().
     """    
-    employees.commit_transaction()
+    employees.finalise_transaction(status)
 
     assert status.code == HTTPStatus.OK.value
     assert len(status.text) > 0
@@ -181,18 +184,23 @@ def test_postgresql_write_to_database_commit_02():
     
     """
     Transaction atomicity -- if there are other operations, they are wrapped within:
-        Employees.begin_transaction(Employees)
+        employees.begin_transaction() or Employees.begin_transaction(Employees)
         ...
-        Employees.commit_transaction(Employees)
+        employees.finalise_transaction(status)
 
-    Of course, Employees.commit_transaction(Employees) should be called conditionally.
+    employees.finalise_transaction(status) conditionally calls employees.commit_transaction()
+    or employees.rollback_transaction()
+
+    It is apparent that employees.commit_transaction() / Employees.commit_transaction(Employees) 
+    should be called conditionally.
     """
-    Employees.begin_transaction(Employees)
-    status = Employees().write_to_database([new_employee1, new_employee2])
+    employees = Employees()
+    employees.begin_transaction()
+    status = employees.write_to_database([new_employee1, new_employee2])
     """
-    Commit transaction: it should be called on successful completion of all writes.
+    Conditionally calls commit_transaction() or rollback_transaction().
     """    
-    Employees.commit_transaction(Employees)
+    employees.finalise_transaction(status)
 
     assert status.code == HTTPStatus.OK.value
     assert len(status.text) > 0
@@ -278,19 +286,23 @@ def test_postgresql_write_to_database_commit_03():
     
     """
     Transaction atomicity -- if there are other operations, they are wrapped within:
-        Employees.begin_transaction(Employees)
+        employees.begin_transaction() or Employees.begin_transaction(Employees)
         ...
-        Employees.commit_transaction(Employees)
+        employees.finalise_transaction(status)
 
-    Of course, employees.commit_transaction() / Employees.commit_transaction(Employees) 
+    employees.finalise_transaction(status) conditionally calls employees.commit_transaction()
+    or employees.rollback_transaction()
+
+    It is apparent that employees.commit_transaction() / Employees.commit_transaction(Employees) 
     should be called conditionally.
     """
-    Employees.begin_transaction(Employees)
-    status = Employees().write_to_database([new_employee])
+    employees = Employees()
+    employees.begin_transaction()
+    status = employees.write_to_database([new_employee])
     """
-    Commit transaction: it should be called on successful completion of all writes.
+    Conditionally calls commit_transaction() or rollback_transaction().
     """    
-    Employees.commit_transaction(Employees)
+    employees.finalise_transaction(status)
 
     assert status.code == HTTPStatus.OK.value
 
@@ -318,12 +330,13 @@ def test_postgresql_write_to_database_commit_03():
         'hire_date': '2010-11-29',
         BH_REC_STATUS_FIELDNAME: BH_RECORD_STATUS_NEW}
     
-    Employees.begin_transaction(Employees)
-    status = Employees().write_to_database([new_employee, updated_employee])
+    employees = Employees()
+    employees.begin_transaction()
+    status = employees.write_to_database([new_employee, updated_employee])
     """
-    Commit transaction: it should be called on successful completion of all writes.
+    Conditionally calls commit_transaction() or rollback_transaction().
     """    
-    Employees.commit_transaction(Employees)
+    employees.finalise_transaction(status)
 
     assert status.code == HTTPStatus.OK.value
     assert len(status.text) > 0
@@ -387,13 +400,13 @@ def test_postgresql_write_to_database_commit_03():
     Employees.commit_transaction(Employees)
 
 @pytest.mark.base_table_crud_postgresql
-def test_postgresql_write_to_database_flush_and_rollback():
+def test_postgresql_write_to_database_rollback():
     """Test transaction atomicity.
     
-    Test insert a new record, flush the transaction to get the unique primary key value,
-    then rollback the transaction, finally verify that the transaction has been rolled back
-    by querying for the just rolled back employee using the intermediate primary key value
-    obtained after flushing the transaction.
+    Insert a new record, ( transaction gets flushed ), the new unique primary key value
+    should be available. Rollback the transaction. Finally verify that the transaction 
+    has been rolled back by querying for the just rolled back employee using the intermediate 
+    primary key value obtained after insertion.
     """
 
     """
@@ -410,16 +423,20 @@ def test_postgresql_write_to_database_flush_and_rollback():
     Transaction atomicity -- if there are other operations, they are wrapped within:
         employees.begin_transaction() or Employees.begin_transaction(Employees)
         ...
-        employees.commit_transaction() or Employees.rollback_transaction(Employees)
+        employees.finalise_transaction(status)
 
-    Of course, Employees.rollback_transaction(Employees) should be called conditionally.
+    employees.finalise_transaction(status) conditionally calls employees.commit_transaction()
+    or employees.rollback_transaction()
+
+    It is apparent that employees.commit_transaction() / Employees.commit_transaction(Employees) 
+    should be called conditionally.
     """
     Employees.begin_transaction(Employees)
     status = Employees().write_to_database([new_employee])
     """
-    Flush transaction so intermediate result is available.
+    Transaction has been flushed. Intermediate result is available.
     """    
-    Employees.flush_transaction(Employees)
+
     """
     Remember the employee number of the newly inserted employee, which is going to be
     rolled back.
@@ -467,17 +484,21 @@ def test_postgresql_run_execute_sql():
     Transaction atomicity -- if there are other operations, they are wrapped within:
         employees.begin_transaction() or Employees.begin_transaction(Employees)
         ...
-        employees.commit_transaction() Employees.commit_transaction(Employees)
+        employees.finalise_transaction(status)
 
-    Of course, employees.commit_transaction() / Employees.commit_transaction(Employees) 
+    employees.finalise_transaction(status) conditionally calls employees.commit_transaction()
+    or employees.rollback_transaction()
+
+    It is apparent that employees.commit_transaction() / Employees.commit_transaction(Employees) 
     should be called conditionally.
     """
-    Employees.begin_transaction(Employees)
-    status = Employees().write_to_database([new_employee])
+    employees = Employees()
+    employees.begin_transaction()
+    status = employees.write_to_database([new_employee])
     """
-    Commit transaction: it should be called on successful completion of all writes.
+    Conditionally calls commit_transaction() or rollback_transaction().
     """    
-    Employees.commit_transaction(Employees)
+    employees.finalise_transaction(status)
 
     new_emp_no = status.data.employees_new_list[0]['emp_no']
 
