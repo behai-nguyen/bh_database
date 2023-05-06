@@ -20,7 +20,9 @@ for more detail.
 Relevant test modules:
 
     * ./tests/test_25_base_table_crud_methods_postgresql.py
-    * ./tests/test_26_base_table_crud_methods_mysql.py    
+    * ./tests/test_26_base_table_crud_methods_mysql.py
+    * ./tests/test_30_base_table_exception_postgresql.py
+    * ./tests/test_31_base_table_exception_mysql.py
 """
 
 from http import HTTPStatus
@@ -458,13 +460,21 @@ class WriteCapableTable(ReadOnlyTable):
         return make_status()
 
     def _insert(self, list):
+        """Within a transaction, any database exception is not raised at this point,
+        they will be raised when calling flush or commit the current transaction.
+        Rollback the current transaction will not raise an exception, i.e. any database
+        violations seem to be removed by the rollback.
+        """
         for record in list:
             self.session.add(self._type(**record))
 
     def _update(self, list):
+        """Within a transaction, any database exception is not raised at this point,
+        they will be raised when calling flush or commit the current transaction.
+        Rollback the current transaction will not raise an exception, i.e. any database
+        violations seem to be removed by the rollback.
+        """
         for entry in list:
-			# raise Exception('Test exception from timesheet_entry._update(...)')
-
             stmt = (
                 update(self._type)
                 .where(self._type.__table__.columns[self._primary_key] == entry[self._primary_key])
@@ -475,6 +485,14 @@ class WriteCapableTable(ReadOnlyTable):
 
     def write_to_database(self, data: list) -> ResultStatus:
         """Write new records and modified records to the underlying database table.
+
+        When all data have been written, it will flush the transaction to cause any
+        potential database violation to come out as an exception so that the result
+        can be accurately determined, freeing the callers from having to handle any
+        possible exception. Callers only have to check the returned result.
+
+        Flushing the transaction also causes intermediate pending committed data be
+        available, callers can access these without having to call flush_transcation().
 
         :Assumptions:
 
@@ -574,17 +592,16 @@ class WriteCapableTable(ReadOnlyTable):
 
             if len(new_list) > 0:
                 self._insert(new_list)
-                """
-                self._app_logger.debug('{} New [{}] records\'ve been written.'.\
-                                            format(len(new_list), self._type.__name__))
-                """
 
             if len(updated_list) > 0:
                 self._update(updated_list)
-                """
-                self._app_logger.debug('{} Updated [{}] records\'ve been written.'.\
-                                            format(len(updated_list), self._type.__name__))
-                """
+
+            # 
+            # This is to cause any potential database violation to raise exception, so
+            # that it will be handled by the exception block below: callers just have
+            # to work with the returned result.
+            #
+            self.session.flush()
 
             status = make_status(text=BH_SAVED_SUCCESSFUL_MSG)
             status.add_data(new_list, '{}_new_list'.format(self.__tablename__.lower()))
