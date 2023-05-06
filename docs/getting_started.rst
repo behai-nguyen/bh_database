@@ -114,3 +114,5 @@ subclass and use the methods in place to do database works:
 
     ./tests/test_25_base_table_crud_methods_postgresql.py
     ./tests/test_26_base_table_crud_methods_mysql.py
+    ./tests/test_30_base_table_exception_postgresql.py
+    ./tests/test_31_base_table_exception_mysql.py
