@@ -90,7 +90,16 @@ class BaseTable(BaseSQLAlchemy):
 
     where :py:class:`WriteCapableTable` is an indirect subclass of :py:class:`BaseTable`.
 
-    For a full example, please see test module ``./tests/test_17_base_table_methods.py``.
+    In general, for this abstract class and its abstract descendant classes, do not 
+    access :attr:`~bh_database.core.BaseSQLAlchemy.query` when not assigned. E.g.::
+
+        assert BaseTable.query == None
+
+    It results in the following exception::
+
+        ArgumentError("Column expression, FROM clause, or other columns clause element expected, <class 'bh_database.core.BaseSQLAlchemy'>.")
+
+    A relevant test module ``./tests/test_17_base_table_methods.py``.
     """
     __abstract__ = True
 
@@ -157,6 +166,15 @@ class ReadOnlyTable(BaseTable):
     :py:class:`~bh_database.core.BaseSQLAlchemy` class, it can use class attributes
     :attr:`~bh_database.core.BaseSQLAlchemy.session` and 
     :attr:`~bh_database.core.BaseSQLAlchemy.query` to alter data directly.
+
+    In general, for this abstract class and its abstract descendant classes, do not 
+    access :attr:`~bh_database.core.BaseSQLAlchemy.query` when not assigned. E.g.::
+
+        assert ReadOnlyTable.query == None
+
+    It results in the following exception::
+
+        ArgumentError("Column expression, FROM clause, or other columns clause element expected, <class 'bh_database.core.BaseSQLAlchemy'>.")
     """
     
     __abstract__ = True
@@ -245,6 +263,15 @@ class WriteCapableTable(ReadOnlyTable):
 
     This table class should be the parent class for the majority of applications' tables, whom 
     the contents would change.
+
+    In general, for this abstract class and its abstract descendant classes, do not 
+    access :attr:`~bh_database.core.BaseSQLAlchemy.query` when not assigned. E.g.::
+
+        assert WriteCapableTable.query == None
+
+    It results in the following exception::
+
+        ArgumentError("Column expression, FROM clause, or other columns clause element expected, <class 'bh_database.core.BaseSQLAlchemy'>.")
     """
 
     __abstract__ = True
