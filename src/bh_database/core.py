@@ -128,13 +128,22 @@ class BaseSQLAlchemy(Base, BaseModel):
     Class attributes:
         | session = None. When set, is of type `sqlalchemy.orm.session.Session <https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session>`_.
         | query = None. When set, is of type :py:class:`BaseQuery`.
+
+    In general, for this abstract class and its abstract descendant classes, do not 
+    access :attr:`query` when not assigned. E.g.::
+
+        assert core.BaseSQLAlchemy.query == None
+
+    It results in the following exception::
+
+        ArgumentError("Column expression, FROM clause, or other columns clause element expected, <class 'bh_database.core.BaseSQLAlchemy'>.")
     """
 
     __abstract__ = True
 
     #: Class attribute. When set, is of type `sqlalchemy.orm.session.Session <https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session>`_.
     session = None
-    #: Class attribute. When set, is of type :py:class:`BaseSQLAlchemy`.
+    #: Class attribute. When set, is of type :py:class:`BaseQuery`.    
     query = None
 
     def begin_transaction(self):
