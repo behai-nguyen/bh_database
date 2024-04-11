@@ -6,3 +6,4 @@ bh_utils
 pytest
 coverage
 myst-parser
+sphinx-rtd-theme
