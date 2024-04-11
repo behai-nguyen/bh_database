@@ -126,8 +126,14 @@ class BaseSQLAlchemy(Base, BaseModel):
     Provide methods to implement transaction atomicity.
 
     Class attributes:
-        | session = None. When set, is of type `sqlalchemy.orm.session.Session <https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session>`_.
-        | query = None. When set, is of type :py:class:`BaseQuery`.
+        | session = None. When set, is of type `sqlalchemy.orm.session.Session <https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session>`_. This attribute is set after successfully calling the :py:class:`Database`'s :py:meth:`~.Database.connect` method.
+        |
+        | query = None. When set, is of type :py:class:`BaseQuery`. This attribute is set after successfully calling the :py:class:`Database`'s :py:meth:`~.Database.connect` method.
+
+    Application models, i.e. tables, descend indirectly from this class, and hence 
+    inherits attributes :attr:`~.session` and :attr:`~.query`. Table classes use 
+    these two class attributes to talk to the connected database: **they should 
+    not need the** :py:class:`Database` **class for anything else**.        
 
     In general, for this abstract class and its abstract descendant classes, do not 
     access :attr:`query` when not assigned. E.g.::
@@ -142,8 +148,10 @@ class BaseSQLAlchemy(Base, BaseModel):
     __abstract__ = True
 
     #: Class attribute. When set, is of type `sqlalchemy.orm.session.Session <https://docs.sqlalchemy.org/en/20/orm/session_api.html#sqlalchemy.orm.Session>`_.
+    #: This attribute is set after successfully calling the :py:class:`Database`'s :py:meth:`~.Database.connect` method.
     session = None
     #: Class attribute. When set, is of type :py:class:`BaseQuery`.    
+    #: This attribute is set after successfully calling the :py:class:`Database`'s :py:meth:`~.Database.connect` method.
     query = None
 
     def begin_transaction(self):
