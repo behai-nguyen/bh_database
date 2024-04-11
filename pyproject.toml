@@ -37,7 +37,7 @@ builds = [
     "build", 
     "twine"
 ]
-docs = [
+dev = [
     "sphinx",
     "myst-parser",
     "sphinx-rtd-theme"
