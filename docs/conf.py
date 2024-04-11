@@ -12,9 +12,9 @@ import sys
 sys.path.insert(0, os.path.abspath('../src'))
 
 project = 'bh-database'
-copyright = '2023, Van Be Hai Nguyen'
+copyright = '2024, Van Be Hai Nguyen'
 author = 'Van Be Hai Nguyen'
-release = '0.0.1'
+release = '0.0.4'
 
 autodoc_member_order = 'bysource'
 
