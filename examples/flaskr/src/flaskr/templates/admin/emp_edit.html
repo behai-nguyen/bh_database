@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<script>
+    let empNo = '';
+    let birthDate = '';
+    let firstName = '';
+    let lastName = '';
+    let gender = '';
+    let hireDate = '';
+</script>
+
+{% if employee is defined and employee %}
+<script>
+    empNo = {{ employee[0].emp_no }};
+    birthDate = '{{ employee[0].birth_date }}';
+    firstName = '{{ employee[0].first_name }}';
+    lastName = '{{ employee[0].last_name }}';
+    gender = '{{ employee[0].gender }}';
+    hireDate = '{{ employee[0].hire_date }}';
+</script>
+{% endif %}
+
+<script>
+	function enableDisableButtons( state ) {
+		$( '#saveEmpBtn' ).prop( 'disabled', state );
+		$( '#newEmpBtn' ).prop( 'disabled', !state );
+        $( '#empList' ).prop( 'disabled', !state );
+	}
+
+	function bindDataChange() {
+		$( '.selector-input' ).on( 'change', function(event) {
+			enableDisableButtons( false );
+			setDataChanged();
+
+			event.preventDefault();
+		});
+	}
+
+    function populateEmployee() {
+        $( '#empNo' ).val( empNo );
+        $( '#birthDate' ).val( birthDate );
+        $( '#firstName' ).val( firstName );
+        $( '#lastName' ).val( lastName );
+        $( '#gender' ).val( gender );
+        $( '#hireDate' ).val( hireDate );
+    }
+
+    function getWrittenListAfterSaved( status, tableName ) {
+        if ( status == null ) return null;
+	    if ( !status.hasOwnProperty('data') ) return null;
+
+	    var key = tableName + '_new_list';
+	    if ( status.data.hasOwnProperty(key) && status.data[key].length > 0 )
+		    return status.data[ key ]
+	    else {
+		    key = tableName + '_updated_list';
+		    if ( status.data.hasOwnProperty(key) && status.data[key].length > 0 )
+		        return status.data[ key ];
+	    };
+
+        return null;
+    }
+
+    function getErrorTextHtml( status ) {
+        let htmlMsgs = [];
+
+        status.data.errors.forEach( ( err ) => {            
+            htmlMsgs.push( '<span>' + err.label + '</span>' );
+            htmlMsgs.push( '<ul>' );
+            err.errors.forEach( (msg) => htmlMsgs.push('<li>'+ msg +'</li>') );
+            htmlMsgs.push( '</ul>' );
+        });
+
+        return `<div>${htmlMsgs.join('')}</div>`;
+    }
+
+    function saveEmployee() {
+        $( '#saveEmpBtn' ).on( 'click', ( event ) => {
+            let data = $( '#empFrm' ).serialize();
+
+            runAjaxEx( 'post', '/employees/save', {},
+                       X_WWW_FORM_URLENCODED_UTF8, data ).
+                then( function( response ) {
+                    let { status, textStatus, jqXHR } = response;
+
+                    if ( status.status.code != OK) {
+                        displayError2( getErrorTextHtml(status) );
+                    }
+                    else {
+                        var list = getWrittenListAfterSaved( status, 'employees' );
+                        $( '#empNo' ).val( list[0].emp_no );
+                        alert(status.status.text);
+
+                        resetDataChanged();
+			            enableDisableButtons( true );                        
+                    }
+                }).
+                catch( function( response ) {
+                    let { xhr, error, errorThrown } = response;
+
+                    alert( errorThrown );
+                });
+
+            event.preventDefault();
+        })
+    }
+
+    function newEmployee() {
+        $( '#newEmpBtn' ).on( 'click', ( event ) => {
+            var url = $( event.target ).attr( 'url' );            
+            window.location.href = $( location ).attr( "origin" ) + '/' + url;
+
+            event.preventDefault();
+        })
+    }
+
+	$( document ).ready( function() {
+        bindDataChange();
+		populateEmployee();
+        saveEmployee();
+        newEmployee();
+	});    
+</script>
+
+<form method="post" id="empFrm">
+    <div class="row mx-1 mb-1 page-heading">
+        <div class="col">Employee Detail</div>
+    </div>
+
+    <div class="row mx-1 mb-1">
+        <div class="col-3"><label for="empNo">Emp. No.</label></div>
+        <div class="col-2">
+            <input name="empNo" id="empNo" readonly class="selector-input">
+        </div>
+    </div>
+
+    <div class="row mx-1 mb-1">
+        <div class="col-3"><label for="birthDate">Birth Date (dd/mm/yyy)</label></div>
+        <div class="col-2">
+            <input name="birthDate" id="birthDate" required maxlength="10" class="selector-input">
+        </div>
+    </div>
+
+    <div class="row mx-1 mb-1">
+        <div class="col-3"><label for="firstName">First Name</label></div>
+        <div class="col-2">
+            <input name="firstName" id="firstName" required maxlength="14" class="selector-input">
+        </div>
+    </div>
+
+    <div class="row mx-1 mb-1">
+        <div class="col-3"><label for="lastName">Last Name</label></div>
+        <div class="col-2">
+            <input name="lastName" id="lastName" required maxlength="16" class="selector-input">
+        </div>
+    </div>
+
+    <div class="row mx-1 mb-1">
+        <div class="col-3"><label for="gender">Gender</label></div>
+        <div class="col-1">
+            <select name="gender" id="gender" required class="selector-input">
+                <option value="">--select--</option>
+                <option value="F">Female</option>
+                <option value="M">Male</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mx-1 mb-1">
+        <div class="col-3"><label for="hireDate">Hire Date (dd/mm/yyy)</label></div>
+        <div class="col-2">
+            <input name="hireDate" id="hireDate" required maxlength="10" class="selector-input">
+        </div>
+    </div>
+
+    <div class="row mx-1 mb-1">
+        <div class="col-6">
+            <button type="button" id="saveEmpBtn" class="btn btn-primary btn-sm" disabled>Save</button>
+            <button type="button" id="newEmpBtn" class="btn btn-primary btn-sm" url="employees/new">New</button>
+            <a href="/employees" id="empList" class="link-primary">Employees List</a>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

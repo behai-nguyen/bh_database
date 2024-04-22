@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<script>
+    function selectEmployee() {
+        $('div.employee-selector').on( 'click', ( event ) => {
+            var url = $( event.target ).parent()
+                .closest( 'div.employee-selector' ).attr( 'url' );
+
+            window.location.href = $( location ).attr( "origin" ) + '/' + url;
+        });
+    };
+
+	$( document ).ready( function() {
+		selectEmployee();
+	});    
+</script>
+
+
+{% if status.status.code == 200 %}
+    {% if status.data|length > 0 %}
+    <div class="sticky-top">
+        <div class="row page-heading">
+            <div class="col">
+                Employees Matched Search Criteria | &nbsp; 
+                <a href="/employees" class="link-primary">Employees List</a> | &nbsp; 
+                <a href="/employees/new" class="link-primary">Add a New Employee</a>
+            </div>
+        </div>
+        <div class="row py-2 border-bottom" style="background-color:aquamarine">
+            <div class="col-1">Emp. No.</div>
+            <div class="col-2">Birth Date</div>
+            <div class="col-3">First Name</div>
+            <div class="col-3">Last Name</div>
+            <div class="col-1">Gender</div>
+            <div class="col-2">Hire Date</div>
+        </div>
+    </div>
+
+    {% for employee in status.data %}
+        <div class="row employee-selector" data-item-id="{{ employee.emp_no }}" 
+             url="employees/edit/{{ employee.emp_no }}" 
+             role="button" data-bs-toggle="tooltip" data-bs-placement="top" 
+             data-bs-html="true">
+            <div class="col-1">{{ employee.emp_no }}</div>
+            <div class="col-2">{{ employee.birth_date }}</div>
+            <div class="col-3">{{ employee.first_name }}</div>
+            <div class="col-3">{{ employee.last_name }}</div>
+            <div class="col-1">{{ employee.gender }}</div>
+            <div class="col-2">{{ employee.hire_date }}</div>
+        </div>
+    {% endfor %}
+
+    {% else %}
+        <div class="row">
+            <div class="col">Sorry, no employees matched the search criteria.</div>
+        </div>
+        <div class="row">
+            <div class="col"><a href="/employees" class="link-primary">Employees List</a></div>
+        </div>
+    {% endif %}
+
+{% else %}
+    <div class="row">
+        <div class="col">Sorry, please refine your search criteria.</div>
+    </div>
+
+    {% for err in status.data.errors %}
+        <div class="row">
+            <div class="col">{{ err.label }}</div>
+        </div>
+        {% for text in err.errors %}
+            <div class="row">
+                <div class="col">{{ text }}</div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <div class="row">
+        <div class="col"><a href="/employees" class="link-primary">Employees List</a></div>
+    </div>    
+{% endif %}
+
+{% endblock %}

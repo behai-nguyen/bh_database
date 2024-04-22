@@ -1,0 +1,33 @@
+[build-system]
+requires      = ["setuptools>=69.5.1", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flask-example"
+version = "0.0.0"
+description = "Demonstrate how to use the bh-database library with the Flask framework."
+
+readme = "README.md"
+authors = [{ name = "Van Be Hai Nguyen", email = "behai_nguyen@hotmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["SQLAlchemy", "database", "wrapper", "flask"]
+
+dependencies = [
+    'tomli; python_version >= "3.10"',
+    'flask',
+    'python-dotenv',
+    'wtforms',
+    'bh-database',
+    'bh_apistatus',
+]
+
+requires-python = ">=3.7"
+
+[project.urls]
+repository = "https://github.com/behai-nguyen/bh_database"
+documentation = "https://bh-database.readthedocs.io/"
