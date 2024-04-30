@@ -7,7 +7,7 @@
 <script>
 	function setFormAction() {
 		$('#searchEmpFrm').on( 'submit', function( event ) {
-			$(this).prop('action', 'employees/search/' + 
+			$(this).prop('action', $( location ).attr( "origin" ) + '/employees/search/' +
 			    $('#last_name').val() + '/' + $('#first_name').val());
 		});
 	}
