@@ -23,3 +23,4 @@ Pip installation::
    core
    base_table
    base_table_test_modules
+   flask_fastapi_examples
