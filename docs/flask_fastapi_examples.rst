@@ -84,7 +84,7 @@ The module name is ``example.py``.
 
 **🚀 To run the example server:**
 
-flask --app example run --host 0.0.0.0 --port 5000
+flask \-\-app example run \-\-host 0.0.0.0 \-\-port 5000
 
 **🚀 To access the search route:**
 
@@ -151,7 +151,7 @@ The module name is ``example.py``.
 
 **🚀 To run the example server:**
 
-uvicorn example:app --host 0.0.0.0 --port 5000
+uvicorn example:app \-\-host 0.0.0.0 \-\-port 5000
 
 **🚀 To access the search route:**
 
