@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bh-database"
-version = "0.0.4"
+version = "0.0.5"
 description = "Database wrapper classes for SQLAlchemy."
 
 readme = "README.md"
