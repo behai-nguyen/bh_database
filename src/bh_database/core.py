@@ -54,7 +54,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import (
     sessionmaker, 
     scoped_session,
-    declarative_base,
+    DeclarativeBase,
     close_all_sessions,
     Query,
 )
@@ -65,8 +65,9 @@ from bh_apistatus.result_status import ResultStatus
 from bh_database.paginator import Paginator
 
 #: 
-Base = declarative_base(metaclass=DeclarativeMeta)
-
+class Base(DeclarativeBase):
+    metaclass=DeclarativeMeta
+    
 class BaseQuery(Query):
     """Custom base query class.
 
