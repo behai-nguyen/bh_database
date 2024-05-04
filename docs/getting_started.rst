@@ -31,18 +31,18 @@ This package **assumes** that primary keys for tables are of type integer. And e
 only has a single primary integer key.
 
 It requires the target database to implement ``unique_id`` table and associated ``get_unique_id`` 
-stored method. Scripts to create these can be found under the ``./sql`` sub-directory of the 
-`repo on GitHub <https://github.com/behai-nguyen/bh_database>`_:
+stored method. Scripts to create these can be found under the 
+`repo ./sql_scripts sub-directory <https://github.com/behai-nguyen/bh_database/tree/main/sql_scripts>`_:
 
 :MySQL:
 
-    * ./sql/mysql_01_unique_id_table.sql
-    * ./sql/mysql_02_get_unique_id_stored_method.sql
+    * `./sql_scripts/mysql/01_unique_id_table.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/mysql/01_unique_id_table.sql>`_.
+    * `./sql_scripts/mysql/02_get_unique_id_stored_method.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/mysql/02_get_unique_id_stored_method.sql>`_.
 
 :PostgreSQL:
 
-    * ./sql/postgresql_01_unique_id_table.sql
-    * ./sql/postgresql_02_get_unique_id_stored_method.sql
+    * `./sql_scripts/postgres/01_unique_id_table.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/01_unique_id_table.sql>`_.
+    * `./sql_scripts/postgres/02_get_unique_id_stored_method.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/02_get_unique_id_stored_method.sql>`_.
 
 The test database
 -----------------
@@ -50,7 +50,7 @@ The test database
 The test database is the MySQL *Employees Sample Database*, recommended (*) by 
 Oracle Corporation, downloadable from `https://github.com/datacharmer/test_db <https://github.com/datacharmer/test_db>`_.
 
-(*) Official documentation page `Employees Sample Database <https://dev.mysql.com/doc/employee/en/>`_.
+(*) The official documentation page `Employees Sample Database <https://dev.mysql.com/doc/employee/en/>`_.
 
 This MySQL database has been migrated to PostgreSQL as described in 
 `pgloader Docker: migrating from Docker & localhost MySQL to localhost PostgreSQL.
@@ -62,13 +62,13 @@ tests in this package.
 
 :MySQL:
 
-    * ./sql/mysql_03_test_employees_preparation.sql
-    * ./sql/mysql_04_test_get_employees_stored_method.sql
+    * `./sql_scripts/mysql/03_test_employees_preparation.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/mysql/03_test_employees_preparation.sql>`_.
+    * `./sql_scripts/mysql/04_test_get_employees_stored_method.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/mysql/04_test_get_employees_stored_method.sql>`_.
 
 :PostgreSQL:
 
-    * ./sql/postgresql_03_test_employees_preparation.sql
-    * ./sql/postgresql_04_test_get_employees_stored_method.sql
+    * `./sql_scripts/postgres/03_test_employees_preparation.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/03_test_employees_preparation.sql>`_.
+    * `./sql_scripts/postgres/04_test_get_employees_stored_method.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/04_test_get_employees_stored_method.sql>`_.
 
 Running the tests
 -----------------

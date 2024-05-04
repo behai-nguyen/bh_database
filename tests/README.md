@@ -12,6 +12,8 @@ https://behainguyen.wordpress.com/2022/11/13/pgloader-docker-migrating-from-dock
 
 Some of the tests will need to call the stored procedure / method ``get_employees``.
 
-For MySQL, please apply this script [get_employees_mysql.sql](https://github.com/behai-nguyen/bh_database/blob/main/tests/stored_methods/get_employees_mysql.sql).
+For MySQL, please apply this script [04_test_get_employees_stored_method.sql](https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/mysql/04_test_get_employees_stored_method.sql).
 
-For PostgreSQL, please apply this script [get_employees_postgresql.sql](https://github.com/behai-nguyen/bh_database/blob/main/tests/stored_methods/get_employees_postgresql.sql).
+For PostgreSQL, please apply this script [04_test_get_employees_stored_method.sql](https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/04_test_get_employees_stored_method.sql).
+
+Please see also [Getting Started – Please Read First | The test database](https://bh-database.readthedocs.io/en/latest/getting_started.html#the-test-database).
