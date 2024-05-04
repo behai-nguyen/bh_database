@@ -90,7 +90,7 @@ class BaseQuery(Query):
     
 class BaseModel(object):
     """A custom base model / table class for `SQLAlchemy declarative base model 
-    <https://docs.sqlalchemy.org/en/14/orm/declarative_tables.html>`_.
+    <https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.DeclarativeBase>`_.
 
     All models (tables) descend from :py:class:`BaseSQLAlchemy` will have this custom base
     model as one of the base classes.
