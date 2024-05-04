@@ -1,5 +1,8 @@
 <!-- 30/04/2024. -->
 
+🚀 A more detail version of this content can be found at 
+[Python: A SQLAlchemy Wrapper Component That Works With Both Flask and FastAPI Frameworks](https://behainguyen.wordpress.com/2024/05/04/python-a-sqlalchemy-wrapper-component-that-works-with-both-flask-and-fastapi-frameworks/).
+
 Note, the codes of [Flask example](https://github.com/behai-nguyen/bh_database/tree/main/examples/flaskr) and [FastAPI example](https://github.com/behai-nguyen/bh_database/tree/main/examples/fastapir) are essentially identical in the following areas:
 
 * ``/models``
