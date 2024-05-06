@@ -64,6 +64,10 @@
     }
 
     function getErrorTextHtml( status ) {
+        if ( status.data == undefined ) {
+            return `<div>${status.status.text}</div>`;
+        };
+                
         let htmlMsgs = [];
 
         status.data.errors.forEach( ( err ) => {            
