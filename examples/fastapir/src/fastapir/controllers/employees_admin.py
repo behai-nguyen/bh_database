@@ -64,44 +64,17 @@ async def search_by_emp_no(request: Request, emp_no: str):
     return EmployeesManager().select_by_employee_number(int(emp_no)).as_dict()
 
 @router.post("/save", response_class=JSONResponse)
-async def save(empNo: Annotated[int | None, Form()] = None,
-    birthDate: Annotated[str, Form()] = ...,
-    firstName: Annotated[str, Form()] = ...,
-    lastName: Annotated[str, Form()] = ...,
-    gender: Annotated[str, Form()] = ...,
-    hireDate: Annotated[str, Form()] = ...):
-    """ empNo can be blank, None or completely absent. Not setting it
-    to optional will cause the server to return 500. It is the first
-    in the form, endpoint's params must match form fields order, 
-    therefore every other fields are set to required with ``...``, 
-    this causes the fields not marked as required in the Swagger UI 
-    doc [http://localhost:5000/docs](http://localhost:5000/docs)!
-
-    This is contradictory to:
-
-    > If you hadn't seen that ``...`` [part of Python and is called "Ellipsis"](https://docs.python.org/3/library/constants.html#Ellipsis).
-    >
-    > It is used by Pydantic and FastAPI to explicitly declare that a value is required.
-
-    See [https://fastapi.tiangolo.com/tutorial/query-params-str-validations/](https://fastapi.tiangolo.com/tutorial/query-params-str-validations/).
-    
-    Production implementation would have authentication mechanism 
-    in place to check for authenticated requests.
+async def save(request: Request):
+    """ empNo can be blank, None or completely absent. 
 
     Actual valid route:
 
     http://localhost:5000/employees/save
     """
 
-    params = {"empNo": empNo,
-        "birthDate": birthDate,
-        "firstName": firstName,
-        "lastName": lastName,
-        "gender": gender,
-        "hireDate": hireDate
-    }
+    form = await request.form()
 
-    return EmployeesManager().write_to_database(params).as_dict()
+    return EmployeesManager().write_to_database(form._dict).as_dict()
  
 @router.get("/new", response_class=HTMLResponse)
 async def new(request: Request):
