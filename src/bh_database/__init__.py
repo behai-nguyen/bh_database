@@ -3,4 +3,10 @@
 
 """This is version number.
 """
-__version__ = "0.0.4"
+
+import logging
+
+__version__ = "0.0.6"
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
