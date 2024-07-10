@@ -1,0 +1,46 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  default:
+    format: '%(levelname)s [%(asctime)s] %(thread)s %(filename)s %(funcName)s %(lineno)s %(message)s'
+    datefmt: '%d-%m-%Y %H:%M:%S'
+handlers:
+  console:
+    formatter: default
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+  rotating_file:
+    formatter: default
+    class: concurrent_log_handler.ConcurrentRotatingFileHandler
+    filename: ./logs/flaskr_example.log
+    maxBytes: 4096
+    backupCount: 5  # Keep 5 old log files    
+    encoding: utf-8
+  queue_rotating_file:
+    class: logging.handlers.QueueHandler
+    handlers:
+      - rotating_file
+loggers:
+  bh_database:
+    level: DEBUG
+    handlers:
+      - console
+      - queue_rotating_file
+    propagate: no
+  bh_utils:
+    level: DEBUG
+    handlers:
+      - console
+      - queue_rotating_file
+    propagate: no
+  flaskr.example:
+    level: DEBUG
+    handlers:
+      - console
+      - queue_rotating_file
+    propagate: no   
+root:
+  level: INFO
+  handlers:
+    - console
+    - queue_rotating_file
