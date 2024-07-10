@@ -66,6 +66,33 @@ SQLALCHEMY_DATABASE_URI = postgresql+psycopg2://postgres:pcb.2176310315865259@lo
 
 They are in this [this repo](https://github.com/behai-nguyen/js).
 
+# Note On Logging
+
+When using the built-in [logging.handlers.RotatingFileHandler](https://docs.python.org/3/library/logging.handlers.html#rotatingfilehandler), we consistently encounter the following error:
+
+```
+Traceback (most recent call last):
+  File "C:\PF\Python312\Lib\logging\handlers.py", line 74, in emit
+    self.doRollover()
+  File "C:\PF\Python312\Lib\logging\handlers.py", line 179, in doRollover
+    self.rotate(self.baseFilename, dfn)
+  File "C:\PF\Python312\Lib\logging\handlers.py", line 115, in rotate
+    os.rename(source, dest)
+PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'F:\\bh_database\\examples\\flaskr\\logs\\flaskr_example.log' -> 'F:\\bh_database\\examples\\flaskr\\logs\\flaskr_example.log.1'
+```
+
+This error has been reported in several posts:
+
+* [PermissionError when using python 3.3.4 and RotatingFileHandler](https://stackoverflow.com/questions/22459850/permissionerror-when-using-python-3-3-4-and-rotatingfilehandler)
+
+* [Python-Flask integration log, error when the log file size exceeds the setting](https://www.programmersought.com/article/43941158027/)
+
+The solution to this problem is to use the [concurrent-log-handler](https://pypi.org/project/concurrent-log-handler/)package. Therefore, the following configuration is recommended in the ``logger_config.yaml`` file:
+
+```yaml
+class: concurrent_log_handler.ConcurrentRotatingFileHandler
+```
+
 # Set Up and Run
 
 Create the virtual environment ``venv``, specify the absolute path for ``virtualenv`` if there are multiple Python versions installed:
