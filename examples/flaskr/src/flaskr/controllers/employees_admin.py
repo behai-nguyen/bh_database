@@ -2,6 +2,8 @@
 Application employees administration functionalities controller.
 """
 
+import logging
+
 from flask import (
     Blueprint,
     request,
@@ -13,6 +15,8 @@ from flaskr.business.employees_mgr import EmployeesManager
 
 bp = Blueprint('employees', __name__, url_prefix='/employees', template_folder='templates')
 
+logger = logging.getLogger('flaskr.example')
+
 @bp.route('/search/<last_name>/<first_name>', methods=['GET', 'POST'])
 def search(last_name: str, first_name: str):
     """ Production implementation would have decorators, at the very least:
@@ -23,6 +27,9 @@ def search(last_name: str, first_name: str):
 
     http://localhost:5000/employees/search/%nas%/%An    
     """
+
+    logger.debug(f"Path: {request.url}")
+
     status = EmployeesManager() \
         .select_by_partial_last_name_and_first_name(last_name, first_name)
     
@@ -41,6 +48,8 @@ def edit(emp_no: str):
     http://localhost:5000/employees/edit/10399
     """
 
+    logger.debug(f"Path: {request.url}")
+
     status = EmployeesManager().select_by_employee_number(int(emp_no))
     
     html = render_template('admin/emp_edit.html', employee=status.serialise_data())
@@ -57,6 +66,8 @@ def search_by_emp_no(emp_no: str):
     http://localhost:5000/employees/search-by-emp-no/10399
     """
 
+    logger.debug(f"Path: {request.url}")
+
     return EmployeesManager().select_by_employee_number(int(emp_no)).as_dict()
 
 @bp.route('/save', methods=['POST'])
@@ -69,6 +80,8 @@ def save():
 
     http://localhost:5000/employees/save
     """
+
+    logger.debug(f"Path: {request.url}")
 
     params = request.values.to_dict(True)
     return EmployeesManager().write_to_database(params).as_dict()
@@ -84,6 +97,8 @@ def new():
     http://localhost:5000/employees/new
     """
 
+    logger.debug(f"Path: {request.url}")
+
     return make_response(render_template('admin/emp_edit.html'))
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -95,5 +110,8 @@ def search_form():
     Actual valid routes:
 
     http://localhost:5000/employees
-    """    
+    """
+
+    logger.debug(f"Path: {request.url}")
+
     return render_template('admin/emp_search.html')
