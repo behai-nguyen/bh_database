@@ -9,7 +9,7 @@ from os import (
 	
 from dotenv import load_dotenv
 
-from distutils.util import strtobool
+from bh_utils.conversions import str_to_bool
 
 basedir = getcwd()
 load_dotenv( path.join(basedir, '.env') )
@@ -20,7 +20,7 @@ class Config:
     # General Config.
     SECRET_KEY = environ.get( 'SECRET_KEY' )
     FLASK_APP = environ.get( 'FLASK_APP' )
-    FLASK_DEBUG = strtobool( environ.get('FLASK_DEBUG') )
+    FLASK_DEBUG = str_to_bool( environ.get('FLASK_DEBUG') )
 
     # Database.
     SQLALCHEMY_DATABASE_URI = environ.get( 'SQLALCHEMY_DATABASE_URI' )
