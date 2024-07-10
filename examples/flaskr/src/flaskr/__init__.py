@@ -1,38 +1,18 @@
 """
 Application package.
 """
-import flask
 
-"""
-from flask_session import Session
-
-from flask_bcrypt import Bcrypt
-
-from flask_wtf.csrf import CSRFProtect
-
-from flask_login import LoginManager
-"""
+import os
 
 import logging
 import logging.config
+import yaml
+
+import flask
 
 from flaskr.config import get_config
 
 from bh_database.core import Database
-
-"""
-csrf = CSRFProtect()
-
-login_manager = LoginManager()
-login_manager.session_protection = 'strong'
-login_manager.login_view = 'auths.login'
-login_manager.login_message_category = 'info'
-
-bcrypt = Bcrypt()
-"""
-
-# from flask_sqlalchemy import SQLAlchemy
-# db = SQLAlchemy()
 
 def create_app(config=None):
     """Construct the core application."""
@@ -42,52 +22,68 @@ def create_app(config=None):
     app.config.from_object(get_config())
 
     init_extensions(app)
-    # register_loggers()
-    
+
+    prepare_logging_and_start_listener()
+
     init_app_database(app)
-
-    """
-    init_csrf(app)
-    register_blueprints(app)
-    """
-
+    
     from .controllers import employees_admin
     app.register_blueprint(employees_admin.bp)
+
+    logging.getLogger('flaskr.example').info("FlaskR example startup complete.")
 
     return app
     
 def init_extensions(app):
     app.url_map.strict_slashes = False
 
+def retrieve_queue_listener():
     """
-    login_manager.init_app(app)
-    bcrypt.init_app(app)
+    Retrieves and returns the QueueListener instance associated with 
+    the 'queue_rotating_file' handler.
+    """
+    return logging.getHandlerByName('queue_rotating_file').listener
+
+def prepare_logging_and_start_listener():
+    """
+    1. Ensures ./logs sub-directory exists under script root directory.
+    2. Loads the logger config YAML file and prepares the logging config.
+    3. Retrieves and returns the QueueListener instance associated with 
+       the 'queue_rotating_file' handler.
     """
 
-"""
-def register_loggers():
-    with open('omphalos-logging.yml', 'rt') as file:
-        config = yaml.safe_load(file.read())
-        logging.config.dictConfig(config)
-"""
+    # Ensure ./logs sub-directory exists under script root directory.
+    os.makedirs(f".{os.sep}logs", exist_ok=True)
+
+    # Now that ./logs sub-directory exists under script root directory,
+    # loads the logger config YAML file and prepares the logging dictionary
+    # config.
+    with open('logger_config.yaml', 'r') as f:
+        config = yaml.safe_load(f.read())
+    logging.config.dictConfig(config)
+
+    listener = retrieve_queue_listener()
+    listener.start()        
 
 def init_app_database(app):
     """    
     Creates SQLAlchemy engine, session factory, scoped session, declarative base.
     Database entities are independent of the application instance.
     """
-    
+
     Database.disconnect()
-    Database.connect(app.config["SQLALCHEMY_DATABASE_URI"], \
+
+    # It is the responsibility of the caller to handle this exception.
+    logger = logging.getLogger('flaskr.example')
+    try:
+        Database.connect(app.config["SQLALCHEMY_DATABASE_URI"], \
             app.config["SQLALCHEMY_DATABASE_SCHEMA"])
-
-"""
-def init_csrf(app):
-    csrf.init_app(app)
-
-def register_blueprints(app):
-    from book_keeping import urls
-
-    for blueprint in urls.blueprints:
-        app.register_blueprint(blueprint)
-"""
+    except Exception as e:
+        logger.exception(str(e))
+        logger.error('Attempt to terminate the application now.')
+        # os.kill(...) would not flush the above two loggings.
+        # os.kill(os.getpid(), signal.SIGINT)
+        
+        # raise RuntimeError(...) flushes any pending loggings and 
+        # also terminates the application.
+        raise RuntimeError('Failed to connect to the target database.')
