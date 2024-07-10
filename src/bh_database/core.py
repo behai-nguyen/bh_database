@@ -44,8 +44,6 @@ To connect to a database server, applications should not have do not more than::
     Database.connect(db_url, [schema | None])
 """
 
-import logging
-# from threading import get_ident
 from enum import Enum
 
 from http import HTTPStatus
@@ -63,6 +61,8 @@ from sqlalchemy.orm.decl_api import DeclarativeMeta
 from bh_apistatus.result_status import ResultStatus
 
 from bh_database.paginator import Paginator
+
+from bh_database import logger
 
 #: 
 class Base(DeclarativeBase):
@@ -319,12 +319,8 @@ class Database:
         Table classes use these two class attributes to talk to the connected database: **they should 
         not need the** :py:class:`Database` **class for anything else**.
         """
-        logger = logging.getLogger('trx')
 
-        info_str_fmt = "{}: \n{:16}: {!r}\n{:16}: {!r}\n{:16}"
-
-        logger.debug(info_str_fmt.format("Before", "engine", id(Database.engine), "session_factory", 
-            id(Database.session_factory), "database_session", id(Database.database_session)))
+        logger.debug(f"Before -- engine: {id(Database.engine)}, session_factory: {id(Database.session_factory)}, database_session: {id(Database.database_session)}")
 
         if (Database.engine == None):
             args = {}
@@ -340,25 +336,33 @@ class Database:
             """
             Database.engine.connect()
 
+            logger.debug(f"Database connected successfully. Driver: {Database.engine.url.drivername}")
+
         if (Database.session_factory == None): 
             Database.session_factory = sessionmaker(autocommit=False, autoflush=False, \
                     bind=Database.engine, future=True)
+            
+            logger.debug("Database session_factory created successfully.")
 
         if (Database.database_session == None):
             # Database.database_session = scoped_session(Database.session_factory, scopefunc=get_ident)
             Database.database_session = scoped_session(Database.session_factory)
 
+            logger.debug("Database database_session (scoped_session) created successfully.")
+
         BaseSQLAlchemy.session = Database.database_session(future=True)
+        logger.debug("BaseSQLAlchemy.session successfully set to Database database_session.")
+
         """
         BaseSQLAlchemy.query is still None after the assignment. I AM POSTULATING THAT
         it is because BaseSQLAlchemy is abstract, which means it does not have an 
         associated database table declared.
         """
         BaseSQLAlchemy.query = Database.database_session.query_property(BaseQuery)
+        logger.debug("BaseSQLAlchemy.query successfully set to Database.database_session.query_property(BaseQuery).")
 
-        logger.debug(info_str_fmt.format("After", "engine", id(Database.engine), "session_factory", 
-            id(Database.session_factory), "database_session", id(Database.database_session)) )
-
+        logger.debug(f"After -- engine: {id(Database.engine)}, session_factory: {id(Database.session_factory)}, database_session: {id(Database.database_session)}")
+        
     @staticmethod
     def disconnect() -> None:
         """Disconnect from database.
@@ -415,3 +419,5 @@ class Database:
 
         BaseSQLAlchemy.session = None
         BaseSQLAlchemy.query = None
+
+        logger.debug("Database disconnected successfully.")
