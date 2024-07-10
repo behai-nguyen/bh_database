@@ -1,0 +1,52 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+  default:
+    (): uvicorn.logging.DefaultFormatter
+    format: '{levelprefix} [{asctime}] {thread} {filename} {funcName} {lineno} {message}'
+    style: '{'
+    datefmt: '%d-%m-%Y %H:%M:%S'
+  colours_removed:
+    (): uvicorn.logging.DefaultFormatter
+    format: '{levelname} [{asctime}] {thread} {filename} {funcName} {lineno} {message}'
+    style: '{'
+handlers:
+  console:
+    formatter: default
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+  rotating_file:
+    formatter: colours_removed
+    class: logging.handlers.RotatingFileHandler
+    filename: ./logs/fastapir_example.log
+    maxBytes: 4096
+    backupCount: 5  # Keep 5 old log files    
+    encoding: utf-8
+  queue_rotating_file:
+    class: logging.handlers.QueueHandler
+    handlers:
+      - rotating_file
+loggers:
+  bh_database:
+    level: DEBUG
+    handlers:
+      - console
+      - queue_rotating_file
+    propagate: no
+  bh_utils:
+    level: DEBUG
+    handlers:
+      - console
+      - queue_rotating_file
+    propagate: no
+  fastapir.example:
+    level: DEBUG
+    handlers:
+      - console
+      - queue_rotating_file
+    propagate: no   
+root:
+  level: INFO
+  handlers:
+    - console
+    - queue_rotating_file
