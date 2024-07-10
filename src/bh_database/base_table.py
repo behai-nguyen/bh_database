@@ -28,8 +28,6 @@ Relevant test modules:
 from http import HTTPStatus
 from contextlib import closing
 
-import logging
-
 from sqlalchemy import text
 
 from sqlalchemy import (
@@ -65,6 +63,8 @@ from bh_database.constant import (
     BH_RETRIEVED_SUCCESSFUL_MSG,
     BH_SAVED_SUCCESSFUL_MSG,
 )
+
+from bh_database import logger
 
 class BaseTable(BaseSQLAlchemy):
     """An abstract base model (table).
@@ -134,8 +134,6 @@ class BaseTable(BaseSQLAlchemy):
             How can you set class attributes from variable arguments (kwargs) in python
         """
         self.__dict__.update(kwargs)
-
-        self._app_logger = logging.getLogger(self.__class__.__name__.lower())
 
     def as_dict(self) -> dict:
         """Convert all column-value pairs of model instance to a dictionary.
@@ -227,6 +225,7 @@ class ReadOnlyTable(BaseTable):
         where ``500`` is ``HTTPStatus.INTERNAL_SERVER_ERROR.value``.
         """
 
+        logger.debug('Entered')
         try:
             status = {}
 
@@ -247,11 +246,14 @@ class ReadOnlyTable(BaseTable):
             if auto_session: self.commit_transaction()
 
         except Exception as e:
+            logger.error(str(e))
             status = make_500_status(str(e))
 
             if auto_session: self.commit_transaction()
 
         finally:
+            logger.debug('Exited.')
+
             if 'result' in locals():
                 result.close()
 
@@ -316,6 +318,7 @@ class WriteCapableTable(ReadOnlyTable):
             }        
         """
 
+        logger.debug('Entered')
         try:
             # raise Exception('Test exception from db_funcs.run_select_sql(engine, sql)')
 
@@ -330,11 +333,15 @@ class WriteCapableTable(ReadOnlyTable):
             if auto_session: self.commit_transaction()
 
         except Exception as e:
+            logger.error(str(e))
+
             status = make_500_status(str(e))
 
             if auto_session: self.rollback_transaction()
 
         finally:
+            logger.debug('Exited.')
+
             if 'result' in locals():
                 result.close()
 
@@ -396,6 +403,8 @@ class WriteCapableTable(ReadOnlyTable):
                 }
             }        
         """
+
+        logger.debug('Entered')
         try:
             if auto_session: self.begin_transaction()
             
@@ -408,9 +417,12 @@ class WriteCapableTable(ReadOnlyTable):
                     case DatabaseType.MySQL:
                         try:
                             result = next(cursor.stored_results())
-                        except StopIteration:                    
-                            status = make_status(text=BH_STORED_PROC_NO_RESULT_SET_MSG
-                                .format(stored_proc_name))
+                        except StopIteration:
+                            msg = BH_STORED_PROC_NO_RESULT_SET_MSG.format(stored_proc_name)
+                            status = make_status(text=msg)
+                            
+                            logger.error(msg)
+
                             return
 
                         dataset = result.fetchall()
@@ -436,9 +448,13 @@ class WriteCapableTable(ReadOnlyTable):
         except Exception as e:
             status = make_500_status(str(e))
 
+            logger.error(str(e))
+
             if auto_session: self.rollback_transaction()
 
         finally:
+            logger.debug('Exited.')
+
             if 'result' in locals():
                 result.close()
 
@@ -601,9 +617,8 @@ class WriteCapableTable(ReadOnlyTable):
             * ./tests/test_26_base_table_crud_methods_mysql.py
         """
 
-        try:
-            self._app_logger.debug('Entered.')
-
+        logger.debug('Entered')
+        try:            
             # Prepares list of new records and updated records.
             new_list = []
             updated_list = []
@@ -635,8 +650,10 @@ class WriteCapableTable(ReadOnlyTable):
             status.add_data(updated_list, '{}_updated_list'.format(self.__tablename__.lower()))
 
         except Exception as e:
-            self._app_logger.error(str(e))
+            logger.error(str(e))
+            
             status = make_500_status(str(e))
 
         finally:
+            logger.debug('Exited.')
             return status
