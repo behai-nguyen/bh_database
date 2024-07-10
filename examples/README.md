@@ -1,5 +1,13 @@
 <!-- 30/04/2024. -->
 
+# Both Examples Require Python 3.12.4
+
+Please note, while the package itself does require Python 3.12.4, both examples do.
+
+To install Python 3.12.4, please refer to the following post: [Installing Python 3.12.4 as an Additional Interpreter on Ubuntu 22.10 and Windows 10](https://behainguyen.wordpress.com/2024/06/28/installing-python-3-12-4-as-an-additional-interpreter-on-ubuntu-22-10-and-windows-10/).
+
+# Further Information
+
 🚀 A more detail version of this content can be found at 
 [Python: A SQLAlchemy Wrapper Component That Works With Both Flask and FastAPI Frameworks](https://behainguyen.wordpress.com/2024/05/04/python-a-sqlalchemy-wrapper-component-that-works-with-both-flask-and-fastapi-frameworks/).
 
