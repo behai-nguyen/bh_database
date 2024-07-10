@@ -2,10 +2,19 @@
 
 Database wrapper classes for SQLAlchemy.
 
-## Pip installation
+## Installation
+
+To install for MySQL using the [mysql-connector-python](https://pypi.org/project/mysql-connector-python) driver, use the following command:
 
 ```
-pip install bh-database
+pip install bh-database[mysql-connector-python]
+```
+
+To install for PostgreSQL using the [psycopg2](https://pypi.org/project/psycopg2) driver, 
+use the following command::
+
+```
+pip install bh-database[psycopg2-binary]
 ```
 
 ## Overview
