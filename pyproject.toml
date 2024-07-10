@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bh-database"
-version = "0.0.5"
+version = "0.0.6"
 description = "Database wrapper classes for SQLAlchemy."
 
 readme = "README.md"
@@ -20,18 +20,22 @@ keywords = ["SQLAlchemy", "database", "wrapper"]
 dependencies = [
     'tomli; python_version >= "3.10"',
     'SQLAlchemy', 
-    'psycopg2-binary',
-    'mysql-connector-python',
     'bh_apistatus',
     'bh_utils'
 ]
 
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
+mysql-connector-python = [
+    "mysql-connector-python"
+]
+psycopg2-binary = [
+    "psycopg2-binary"
+]
 tests = [
-  "pytest",
-  "coverage"
+    "pytest",
+    "coverage"
 ]
 builds = [
     "build", 
