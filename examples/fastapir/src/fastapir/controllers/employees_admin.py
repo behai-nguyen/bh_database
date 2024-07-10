@@ -9,6 +9,8 @@ from fastapi.responses import (
     JSONResponse,
 )
 
+from fastapir import logger
+
 from fastapir.business.employees_mgr import EmployeesManager
 
 from fastapir.controllers import templates
@@ -28,6 +30,9 @@ async def search(request: Request, last_name: str, first_name: str):
 
     http://localhost:5000/employees/search/%nas%/%An    
     """
+
+    logger.debug(f"Path: {request.url}")
+
     status = EmployeesManager() \
         .select_by_partial_last_name_and_first_name(last_name, first_name)
     
@@ -45,6 +50,8 @@ async def edit(request: Request, emp_no: str):
     http://localhost:5000/employees/edit/10399
     """
 
+    logger.debug(f"Path: {request.url}")
+
     status = EmployeesManager().select_by_employee_number(int(emp_no))
     
     return templates.TemplateResponse(request=request, 
@@ -61,6 +68,8 @@ async def search_by_emp_no(request: Request, emp_no: str):
     http://localhost:5000/employees/search-by-emp-no/10399
     """
 
+    logger.debug(f"Path: {request.url}")
+
     return EmployeesManager().select_by_employee_number(int(emp_no)).as_dict()
 
 @router.post("/save", response_class=JSONResponse)
@@ -71,6 +80,8 @@ async def save(request: Request):
 
     http://localhost:5000/employees/save
     """
+
+    logger.debug(f"Path: {request.url}")
 
     form = await request.form()
 
@@ -86,6 +97,8 @@ async def new(request: Request):
     http://localhost:5000/employees/new
     """
 
+    logger.debug(f"Path: {request.url}")
+
     return templates.TemplateResponse(request=request, name="admin/emp_edit.html")
 
 @router.get("/", response_class=HTMLResponse)
@@ -98,5 +111,7 @@ async def search_form(request: Request):
 
     http://localhost:5000/employees
     """
+
+    logger.debug(f"Path: {request.url}")
 
     return templates.TemplateResponse(request=request, name="admin/emp_search.html")

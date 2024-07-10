@@ -19,6 +19,8 @@ from bh_apistatus.result_status import (
     make_500_status,
 )
 
+from fastapir import logger
+
 class BaseTranslations(object):
     def gettext(self, string):
         caller = inspect.currentframe().f_back.f_locals
@@ -114,6 +116,7 @@ def validate(data: dict, forms: list) -> ResultStatus:
     :param bool use_first_error: whether to copy the first error to status.text.
     """  
 
+    logger.debug('Entered...')
     try:
         record_list = [data] if (type(data) != list) else data
 
@@ -137,7 +140,10 @@ def validate(data: dict, forms: list) -> ResultStatus:
                         errors.append(error)
 
     except Exception as e:
+        logger.exception(str(e))
         return make_500_status(str(e))
+    
+    logger.debug('Exited.')
     
     if (len(errors) == 0): return make_status()
     return make_500_status('').add_data(errors, name='errors')

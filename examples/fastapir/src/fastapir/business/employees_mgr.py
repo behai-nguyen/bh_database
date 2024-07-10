@@ -25,6 +25,8 @@ from .employees_validation import (
     EditorForm,
 )
 
+from fastapir import logger
+
 from fastapir.models.employees import Employees
 
 ERR_INVALID_SEARCH_EMP_NUMBER_MSG = 'Invalid search employee number.'
@@ -50,7 +52,7 @@ class EmployeesManager(AppBusiness):
     To keep the example simple, we don't implement any decorator.
     """
     def select_by_partial_last_name_and_first_name(self, 
-            last_name: str, first_name: str) -> ResultStatus:
+            last_name: str, first_name: str) -> ResultStatus:        
         try:
             search_data = {'last_name': last_name, 'first_name': first_name}
             status = validate(search_data, [SearchByNameForm])
@@ -60,6 +62,7 @@ class EmployeesManager(AppBusiness):
                 last_name, first_name)
 
         except Exception as e:
+            logger.exception(str(e))
             return make_500_status(str(e))
         
     """
@@ -78,6 +81,7 @@ class EmployeesManager(AppBusiness):
             return Employees().select_by_employee_number(emp_no)
 
         except Exception as e:
+            logger.exception(str(e))
             return make_500_status(str(e))
         
     """
@@ -162,6 +166,7 @@ class EmployeesManager(AppBusiness):
             - ""employees_updated_list" is populated if the written record was updated.
         """
 
+        logger.debug('Entered...')
         try:
             employee = Employees()
 
@@ -189,8 +194,10 @@ class EmployeesManager(AppBusiness):
             self._write_last_result.add_data(getattr(status.data, data_name), data_name)
 
         except Exception as e:
+            logger.exception(str(e))
             self._write_last_result = make_500_status(str(e))
 
         finally:
             employee.finalise_transaction(self._write_last_result)
+            logger.debug('Exited.')
             return self._write_last_result
