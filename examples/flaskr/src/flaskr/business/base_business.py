@@ -11,6 +11,8 @@ is possible, if moved to a different framework, these framework-dependent module
 have to be re-written. 
 """
 
+import logging
+
 from http import HTTPStatus
 
 from abc import (
@@ -18,12 +20,12 @@ from abc import (
     abstractmethod,
 )
 
-import logging
-
 from bh_database.constant import (
     BH_RECORD_STATUS_NEW,
     BH_RECORD_STATUS_MODIFIED,
 )
+
+logger = logging.getLogger('flaskr.example')
 
 class BaseBusiness(ABC):
     """
@@ -60,7 +62,6 @@ class BaseBusiness(ABC):
     """
 
     def __init__(self):
-        self._app_logger = logging.getLogger(self.__class__.__name__.lower())
         self._last_message = ''
         self._type = type(self)
 
@@ -338,6 +339,9 @@ class BaseBusiness(ABC):
             	    }
                 }
         """
+
+        logger.debug('Entered...')
+
         self._write_data = data
         self._write_last_result = None
 
@@ -355,6 +359,8 @@ class BaseBusiness(ABC):
         if status.code == HTTPStatus.OK.value:
             status = self._post_write()
 
+        logger.debug('Exited.')
+        
         return self._write_last_result if self._write_last_result != None else status
 
     def __get_last_message(self):
