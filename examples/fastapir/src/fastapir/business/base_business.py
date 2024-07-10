@@ -18,12 +18,12 @@ from abc import (
     abstractmethod,
 )
 
-import logging
-
 from bh_database.constant import (
     BH_RECORD_STATUS_NEW,
     BH_RECORD_STATUS_MODIFIED,
 )
+
+from fastapir import logger
 
 class BaseBusiness(ABC):
     """
@@ -60,7 +60,6 @@ class BaseBusiness(ABC):
     """
 
     def __init__(self):
-        self._app_logger = logging.getLogger(self.__class__.__name__.lower())
         self._last_message = ''
         self._type = type(self)
 
@@ -338,6 +337,9 @@ class BaseBusiness(ABC):
             	    }
                 }
         """
+
+        logger.debug('Entered...')
+
         self._write_data = data
         self._write_last_result = None
 
@@ -354,6 +356,8 @@ class BaseBusiness(ABC):
 
         if status.code == HTTPStatus.OK.value:
             status = self._post_write()
+
+        logger.debug('Exited.')
 
         return self._write_last_result if self._write_last_result != None else status
 
