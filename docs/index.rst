@@ -17,6 +17,8 @@ Pip installation::
    :maxdepth: 2
    :caption: API Documentation:
 
+   installation.rst
+   logger.rst
    getting_started
    constant
    paginator
