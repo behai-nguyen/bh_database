@@ -166,3 +166,6 @@ cython_debug/
 # Local, personal
 working/
 backup/
+
+# Logs
+logs/
