@@ -1,4 +1,4 @@
-constant module
+constant Module
 ===============
 
 .. automodule:: bh_database.constant

@@ -1,4 +1,4 @@
-Base Table test modules
+Base Table Test Modules
 -----------------------
 
 In addition to test modules listed in :ref:`core-test-modules`, the following model (table) 

@@ -1,4 +1,4 @@
-Core module
+Core Module
 ===========
 
 .. automodule:: bh_database.core
@@ -8,7 +8,7 @@ Core module
 
 .. _core-test-modules:
 
-Core test modules
+Core Test Modules
 -----------------
 
 There are following modules:

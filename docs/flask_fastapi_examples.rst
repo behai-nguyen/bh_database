@@ -7,7 +7,7 @@ implement only a single read operation. Their fuller examples,
 and `FastAPI <https://github.com/behai-nguyen/bh_database/tree/main/examples/fastapir>`_ 
 implement full CRUD operations.
 
-A simple, one module ``Flask`` web server example
+A Simple, One Module ``Flask`` Web Server Example
 -------------------------------------------------
 
 The module name is ``example.py``.
@@ -82,16 +82,16 @@ The module name is ``example.py``.
     if __name__ == '__main__':  
         app.run()
 
-**🚀 To run the example server:**
+**🚀 To run the example server**::
 
-flask \-\-app example run \-\-host 0.0.0.0 \-\-port 5000
+    flask \-\-app example run \-\-host 0.0.0.0 \-\-port 5000
 
 **🚀 To access the search route:**
 
 http://localhost:5000/employees/search/%nas%/%An
 
 
-A simple, one module ``FastAPI`` web server example
+A Simple, One Module ``FastAPI`` Web Server Example
 ---------------------------------------------------
 
 The module name is ``example.py``.
@@ -149,22 +149,22 @@ The module name is ``example.py``.
             .select_by_partial_last_name_and_first_name(last_name, first_name) \
             .as_dict()
 
-**🚀 To run the example server:**
+**🚀 To run the example server**::
 
-uvicorn example:app \-\-host 0.0.0.0 \-\-port 5000
+    uvicorn example:app \-\-host 0.0.0.0 \-\-port 5000
 
 **🚀 To access the search route:**
 
 http://localhost:5000/employees/search/%nas%/%An
 
-A fuller ``Flask`` web server example with CRUD operations
+A Fuller ``Flask`` Web Server Example with CRUD Operations
 ----------------------------------------------------------
 
 Please see `https://github.com/behai-nguyen/bh_database/tree/main/examples/flaskr <https://github.com/behai-nguyen/bh_database/tree/main/examples/flaskr>`_.
 
 It is a fully documented example.
 
-A fuller ``FastAPI`` web server example with CRUD operations
+A Fuller ``FastAPI`` Web Server Example with CRUD Operations
 ------------------------------------------------------------
 
 Please see `https://github.com/behai-nguyen/bh_database/tree/main/examples/fastapir <https://github.com/behai-nguyen/bh_database/tree/main/examples/fastapir>`_.

@@ -1,4 +1,4 @@
-Base Table classes
+Base Table Classes
 ==================
 
 .. automodule:: bh_database.base_table

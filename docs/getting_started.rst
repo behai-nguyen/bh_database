@@ -3,28 +3,9 @@ Getting Started -- Please Read First
 
 Database classes using SQLAlchemy.
 
-Required drivers 
-----------------
-
-These classes currently support only two database types: MySQL and PostgreSQL. Drivers 
-required for MySQL and PostgreSQL, respectively:
-
-    * `https://pypi.org/project/mysql-connector-python/ <https://pypi.org/project/mysql-connector-python/>`_.
-    * `https://pypi.org/project/psycopg2/ <https://pypi.org/project/psycopg2/>`_.
-
-This package installs both drivers, remove the one not required.
-
-:To remove MySQL driver:
-
-    pip uninstall mysql-connector-python
-
-:To remove PostgreSQL driver:
-
-    pip uninstall psycopg2
-
 .. _getting-started-database-requirements:
 
-Database requirements
+Database Requirements
 ---------------------
 
 This package **assumes** that primary keys for tables are of type integer. And each table 
@@ -44,7 +25,7 @@ stored method. Scripts to create these can be found under the
     * `./sql_scripts/postgres/01_unique_id_table.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/01_unique_id_table.sql>`_.
     * `./sql_scripts/postgres/02_get_unique_id_stored_method.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/02_get_unique_id_stored_method.sql>`_.
 
-The test database
+The Test Database
 -----------------
 
 The test database is the MySQL *Employees Sample Database*, recommended (*) by 
@@ -70,7 +51,7 @@ tests in this package.
     * `./sql_scripts/postgres/03_test_employees_preparation.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/03_test_employees_preparation.sql>`_.
     * `./sql_scripts/postgres/04_test_get_employees_stored_method.sql <https://github.com/behai-nguyen/bh_database/blob/main/sql_scripts/postgres/04_test_get_employees_stored_method.sql>`_.
 
-Running the tests
+Running the Tests
 -----------------
 
 Tests have been grouped for each database type. They are identical tests, except for 
@@ -86,7 +67,7 @@ the initial database connection at the beginning of each test module.
 
 :To run a specific test: pytest -m <marker> (markers are defined in ``pytest.ini``).
 
-Test modules
+Test Modules
 ------------
 
 There are following core modules:
