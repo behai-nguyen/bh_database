@@ -3,19 +3,24 @@ requires      = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
+dynamic = ["version"]
 name = "bh-database"
-version = "0.0.6"
 description = "Database wrapper classes for SQLAlchemy."
-
 readme = "README.md"
-authors = [{ name = "Van Be Hai Nguyen", email = "behai_nguyen@hotmail.com" }]
-license = { file = "LICENSE" }
+authors = [
+    {name = "Van Be Hai Nguyen", email = "behai_nguyen@hotmail.com"}
+]
+maintainers = [
+    {name = "Van Be Hai Nguyen", email = "behai_nguyen@hotmail.com"}
+]
 classifiers = [
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Database Wrapper",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["SQLAlchemy", "database", "wrapper"]
+keywords = ["SQLAlchemy", "database", "wrapper", "MySQL", "PostgreSQL", "Postgre"]
 
 dependencies = [
     'tomli; python_version >= "3.10"',
@@ -46,6 +51,9 @@ dev = [
     "myst-parser",
     "sphinx-rtd-theme"
 ]
+
+[tool.setuptools.dynamic]
+version = {attr = "bh_database.__version__"}
 
 [project.urls]
 repository = "https://github.com/behai-nguyen/bh_database"
